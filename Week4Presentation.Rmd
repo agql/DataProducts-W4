@@ -1,0 +1,74 @@
+---
+title: "Analysis of HR Data"
+author: "Agustin Gonzalez-Quel"
+date: "May 20th, 2017"
+runtime: shiny
+output: ioslides_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## Human Resources {.smaller}
+
+The work included in this presentation is based on a Datased from Kaggle <https://www.kaggle.com> by Ludovic Benistant, released under  <https://creativecommons.org/licenses/by-sa/4.0/> License.
+
+The Dataset includes anonymised information on employees, including the following fields:
+
+- Satisfaction Level,
+- Last Evaluation
+- Number of projects
+- Average monthy hours
+- Time spent in the company (years)
+- Salary level (High, Medium, Low)
+
+Data is included in the file "HR_comma_sep.csv" provided.
+
+## Loading the data {.smaller}
+
+We read the file into a data frame. Let's have a look
+
+```{r, echo = TRUE, warning = FALSE, message=FALSE}
+library(ggplot2)
+hr<- read.csv("HR_comma_sep.csv")
+head(hr)
+```
+
+In the Shiny presentation, we include an Slider for the user to select a number of employees to display: between 100 and 2000.
+
+## Human Resources {.smaller}
+
+What we want to explore is the relationship between worked hours and satisfaction of the employee using a shiny applicacion.
+
+This application will allow the user to select a number of employees to be displayed in a plot showing the above mentioned relationship.
+
+Using the slider, the user will visually check how the distribution evolves with the number of employees.
+
+## The Shiny App {.smaller}
+
+```{r echo = FALSE}
+    sliderInput("employees", "Number of Employees:", 
+                 min = 100, max = 2000, value = 200)
+```
+
+```{r echo = FALSE}
+renderPlot({
+  hr <- hr[0:input$employees,]
+  qplot(data = hr,
+          main = "Worked hours vs Satisfaction level",
+          x = hr$average_montly_hours, 
+          y = hr$satisfaction_level,
+          xlab = "Monthly worked hours",
+          ylab = "Satisfaction level",
+          color = hr$salary
+          ) + labs(color = "Salary level")
+  
+})
+```
+
+## Future work
+
+It will be interesting to further explore this data, including the information of years spent in the company.
+
+We will also use predictive modelling to find out any predictability.
